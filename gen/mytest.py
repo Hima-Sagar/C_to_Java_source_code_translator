@@ -26,8 +26,13 @@ class MyCVisitor2(CVisitor):
         self.textdict={}
         self.crude_cfg = ""
         self.VarList = []
+        self.comandArguments = 0
 
-
+    # dictionary={
+    #     "int main()":""
+    # }
+    def getComandArguments(self):
+        return self.comandArguments
     def getCrudeCfg(self):
         return self.crude_cfg
 
@@ -38,69 +43,77 @@ class MyCVisitor2(CVisitor):
         return self.VarList
 
 
+#### INT MAIN(){ }
 
     def visitTranslationUnit(self, ctx):    # functions
         # print(dir(ctx))
         if(ctx.getChildCount() > 1):
             pass
         else:
-            print("***")
-            self.crude_cfg = self.crude_cfg + "[ "
+            # print("***")
+            #### To find whether there are command line arguments
             if (ctx.children[0].children[0].children[1].children[0].getChildCount() > 3):
-                self.crude_cfg = self.crude_cfg  + str(self.nodeCounter)
-                self.nodeCounter = self.nodeCounter + 1
+                self.comandArguments=1
+
             else:
-                self.crude_cfg = self.crude_cfg + " 0"
-        self.crude_cfg = self.crude_cfg + " [ "
-        self.visit(ctx.children[0])
-        self.crude_cfg = self.crude_cfg + " ]"
-        self.crude_cfg = self.crude_cfg + " ]\n"
+                self.comandArguments=0
 
-    def visitSelectionStatement(self, ctx):     #if
-        if (str(ctx.children[0]) == "if"):
-            #print(self.nodeCounter, "\n", ctx.getText())
-            self.crude_cfg = self.crude_cfg + "[ if_"
-            self.visit(ctx.children[2])
-            self.crude_cfg = self.crude_cfg + "[ "
-            self.visit(ctx.children[4])
-            self.crude_cfg = self.crude_cfg + " ] "
-            self.crude_cfg = self.crude_cfg + "[ "
-            if (ctx.getChildCount()>5 and str(ctx.children[5]) == "else"):
-                self.visit(ctx.children[6])
-            self.crude_cfg = self.crude_cfg + " ] "
-            self.crude_cfg = self.crude_cfg + " ] "
+                f=open("output.java","a+")
+                # f.write("hiiii\n")
+                if(ctx.children[0].children[0].children[0].getText()=="int" or ctx.children[0].children[0].children[0].getText()=="void" and ctx.children[0].children[0].children[1].children[0].children[0].getText()=="main"):
+                    f.write("\tpublic static void main")
 
-    def visitDeclaration(self, ctx):
-        if ctx.getChildCount() > 1:
-            self.textdict[self.nodeCounter] = ctx.getText()
-            self.crude_cfg = self.crude_cfg + str(self.nodeCounter) + " "
-            self.nodeCounter = self.nodeCounter+1
+                if(ctx.children[0].children[0].children[1].children[0].children[1].getText()=="("):
+                    f.write("(")
+                if (ctx.children[0].children[0].children[1].children[0].children[2].getText() == ")"):
+                    f.write(")")
+                if (ctx.children[0].children[0].children[2].children[0].getText() == "{"):
+                    f.write("{\n")
+
+                f.close()
+                self.visit(ctx.children[0])
+                f=open("output.java","a+")
+                if (ctx.children[0].children[0].children[2].children[2].getText() == "}"):
+                    f.write("\t}\n")
+                f.close()
+         # print(ctx.getText())
 
 
-    def visitDirectDeclarator(self, ctx):
-        if(ctx.getChildCount()==1):
-            self.VarList.append(ctx.getText())
+#### RETURN ;
+    def visitCompoundStatement(self,ctx):
+
+        self.visit(ctx.children[1])
+        if(ctx.children[1].children[1].children[0].children[0].children[0].getText()=="return" and ctx.children[1].children[1].children[0].children[0].children[2].getText()==";" and ctx.children[1].children[1].children[0].children[0].children[1].getText()!=""):
+            f=open("output.java","a+")
+            f.write("\t\treturn;\n")
+            f.close()
+
+    # def visitBlockItemList(self,ctx):
+    #     # print(ctx.children[1].getText())
+    #     n = ctx.getChildCount()
+    #     for i in range(n):
+    #         self.visit(ctx.children[i])
+    #
+    #     # self.visitChildren(ctx)
 
 
+#### PRINTF();
+    def visitExpressionStatement(self,ctx):
+        if(ctx.children[1].getText()==";" and ctx.children[0].getText()[0:6]=="printf"):
+            # print(ctx.children[0].getText())
+            f = open("output.java", "a+")
+            f.write("\t\tSystem.out.print"+ctx.children[0].getText()[6:]+";\n")
+            f.close()
 
-    def visitAssignmentExpression(self, ctx):
-        if ctx.getChildCount() > 1:
-           #print(self.nodeCounter, "\n", ctx.getText())                        # <------node
-            self.textdict[self.nodeCounter] = ctx.getText()
-            self.crude_cfg = self.crude_cfg + str(self.nodeCounter) + " "
-            self.nodeCounter = self.nodeCounter + 1
+#####IMPORTANT UNABLE TO VISIT THIS METHOD OF TREE.
+    # def visitPostfixExpression(self,ctx):
 
-    def visitExpression(self, ctx):
-        #if ctx.getChildCount() > 1:
-        #print(self.nodeCounter, "\n", ctx.getText())                        # <------node
-        self.textdict[self.nodeCounter] = ctx.getText()
-        self.crude_cfg = self.crude_cfg + str(self.nodeCounter) + " "
-        self.nodeCounter = self.nodeCounter + 1
-
-
-
-
-
+    #     if(ctx.children[0].getText()=="printf" and ctx.children[1].getText()=="(" and ctx.children[3].getText()==")" ):
+    #         # self.visit(ctx.children[0])
+    #         print(ctx.children[2].getText())
+    #         f = open("output.java", "a+")
+    #         f.write("System.out.print("+ctx.children[2].getText()+");\n")
+    #         f.close()
 
 
 def main(argv):
@@ -110,28 +123,23 @@ def main(argv):
     stream = CommonTokenStream(lexer)
     parser = CParser(stream)
     tree = parser.compilationUnit()
-    print(tree)
+    # print(tree)
     ast = tree.toStringTree(recog=parser)
-    print(ast)
+    # print(ast)
 
 
-    #v = MyCVisitor()
-    #v.visit(tree)
-    #print(v.getVarList())
 
-
+#### CLASS NAME {
+    f = open("output.java", "w+")
+    f.write("public class DemoTranslation {\n")
+    f.close()
     v2 = MyCVisitor2()
     v2.visit(tree)
 
-    # print(v2.getVarList())
+#### }
 
-
-    cfg_string = v2.getCrudeCfg()
-    print(cfg_string)
-
-    cfg_textdict = v2.getdict()
-    print(cfg_textdict)
-
+    f = open("output.java", "a+")
+    f.write("}")
 
 
 

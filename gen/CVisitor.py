@@ -166,6 +166,7 @@ class CVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CParser#typeSpecifier.
     def visitTypeSpecifier(self, ctx:CParser.TypeSpecifierContext):
+
         return self.visitChildren(ctx)
 
 
@@ -236,6 +237,7 @@ class CVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CParser#functionSpecifier.
     def visitFunctionSpecifier(self, ctx:CParser.FunctionSpecifierContext):
+
         return self.visitChildren(ctx)
 
 
@@ -251,6 +253,7 @@ class CVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CParser#directDeclarator.
     def visitDirectDeclarator(self, ctx:CParser.DirectDeclaratorContext):
+
         return self.visitChildren(ctx)
 
 
@@ -281,6 +284,7 @@ class CVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CParser#pointer.
     def visitPointer(self, ctx:CParser.PointerContext):
+        print(str(ctx.children[0]))
         return self.visitChildren(ctx)
 
 
@@ -436,6 +440,7 @@ class CVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CParser#functionDefinition.
     def visitFunctionDefinition(self, ctx:CParser.FunctionDefinitionContext):
+
         return self.visitChildren(ctx)
 
 
