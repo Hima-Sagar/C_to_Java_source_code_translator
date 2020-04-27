@@ -14,7 +14,7 @@ Files:
 - README.txt: Meta information file
 - prog1.c: my sample input file
 - prog2.c: given sample input file
-- output.java : this file is output file
+- output.java : this is the output file
 
 Execution Instructions/Commands: Provide the input .c file as command line argument to the <mytest.py>file .Go to appropriate location(directory) using terminal and use these command.
 
