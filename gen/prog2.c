@@ -1,3 +1,4 @@
+//#include<stdio.h>
 
 int search(int arr[], unsigned int arr_len, int x){
     for (unsigned int i = 0; i < arr_len; i++)
@@ -24,17 +25,14 @@ int verifyFactorial(int num){
     }
     return fact;
 }
-void pri(){
-}
+
 void main() {
 	   int arr[] = { 1, 2, 3, 4, 5, 6 };
 	   int num = 6;
-	   char a;
 	   int result = search(arr, 6, num);
-	   printf("ass%d %d\n", result,hat);
+	   printf("%d\n", result);
 	   result = factorial(num);
 	   printf("%d\n", result);
-	   pri();
 }
 
 //This should be linked to its function declaration
