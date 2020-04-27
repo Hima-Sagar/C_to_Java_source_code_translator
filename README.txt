@@ -7,7 +7,7 @@ Hima Sagar - 1701CS23
 Status:-
 Completed the features given in the sample input file and made other features(details) were also considered in some cases.
 We Took freedom of not creating an object to call the method(or function) instead declared the methoda as static as discussed with Akshay Sir. 
-  Note :The given grammer file could not parse the preproccessors (#include's) and gave errors ,So please kindly remove the preproccessors while giving the input.The reason we didn't remove them by ourselves is that if the annother grammer(is added as a module by removing the present one) which supports preproccesors ,is added then it works fine.
+  Note :The given grammer file could not parse the preproccessors (#include's) and gave errors ,So please kindly remove the preproccessors while giving the input.
         
 Files:
 - mytest.py: The main file
